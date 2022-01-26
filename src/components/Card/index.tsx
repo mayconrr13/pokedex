@@ -7,7 +7,6 @@ type CardProps = {
 }
 
 const Card = ({props}: CardProps) => {
-    console.log(props.links)
     return (
         <article>
             <header>

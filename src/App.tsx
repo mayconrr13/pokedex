@@ -11,7 +11,7 @@ function App() {
 
   const getTypeQuery = gql`
     query getMissionsQuery {
-      launchesPast(limit: 20) {
+      launchesPast(limit: 10) {
         mission_name
         launch_date_local
         launch_site {
@@ -30,13 +30,18 @@ function App() {
     }    
   `
 
-  const { data, loading, error, fetchMore } = useQuery(getTypeQuery)
+  const { data, loading, error, fetchMore } = useQuery(getTypeQuery, {
+    variables: {
+      offset: 0,
+      limit: 10
+    }
+  })
 
   useEffect(() => {
     if (data) {
       setMissions(data.launchesPast)
     }
-  }, [data, loading, error])
+  }, [data])
   
   return (
     <>
