@@ -1,16 +1,17 @@
-export type MissionProps = {
-    mission_name: string
-    launch_date_local: string
-    launch_site: {
-        site_name_long: string
+export type AnimeProps = {
+    siteUrl: string
+    title: {
+        english: string
+        native: string
     }
-    links: {
-        article_link: string
-        video_link: string
-        flickr_images: string[]
+    description: string
+    status: string
+    episodes: string
+    chapters: string
+    coverImage: {
+        extraLarge: string
     }
-    rocket: {
-        rocket_name: string
-    }
-    launch_success: boolean
+    bannerImage: string
+    averageScore: string
+    isFavourite: string
 }

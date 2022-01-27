@@ -4,50 +4,54 @@ import {
   gql
 } from "@apollo/client";
 import Card from './components/Card'
-import { MissionProps } from './components/Card/types';
+import { AnimeProps } from './components/Card/types';
 
 function App() {
-  const [missions, setMissions] = useState<MissionProps[]>([] as MissionProps[])
+  const [animes, setAnimes] = useState<AnimeProps[]>([] as AnimeProps[])
 
   const getTypeQuery = gql`
-    query getMissionsQuery {
-      launchesPast(limit: 10) {
-        mission_name
-        launch_date_local
-        launch_site {
-          site_name_long
+    query getAnimesList ($perPage: Int)  {
+      Page(perPage: $perPage) {
+        media {
+          siteUrl
+          title {
+            english
+            native
+          }
+          description
+          status
+          episodes
+          chapters
+          coverImage {
+            extraLarge
+          }
+          bannerImage
+          averageScore
+          isFavourite
         }
-        links {
-          article_link
-          video_link
-          flickr_images
-        }
-        rocket {
-          rocket_name
-        }
-        launch_success
       }
-    }    
+    }   
   `
 
   const { data, loading, error, fetchMore } = useQuery(getTypeQuery, {
     variables: {
-      offset: 0,
-      limit: 10
+      perPage: 100
     }
   })
 
   useEffect(() => {
     if (data) {
-      setMissions(data.launchesPast)
+      setAnimes(data.Page.media)
     }
   }, [data])
+
+  console.log(data)
   
   return (
     <>
       {
         data && !error && !loading &&
-          missions.map((item: any) => {
+          animes.map((item: any) => {
             return (
               <Card props={item}/>
             )

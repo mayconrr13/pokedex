@@ -1,9 +1,7 @@
-import { MissionProps } from "./types"
-
-import defaultMissionImage from "/images/default-mission-image.jpg"
+import { AnimeProps } from "./types"
 
 type CardProps = {
-    props: MissionProps
+    props: AnimeProps
 }
 
 const Card = ({props}: CardProps) => {
@@ -11,20 +9,26 @@ const Card = ({props}: CardProps) => {
         <article>
             <header>
                 <div>
-                    {
-                        props.links.flickr_images.length === 0 ? (
-                            <img src={defaultMissionImage} alt={props.mission_name} width={320} height={180}/>
-                        ) : (
-                            <img src={props.links.flickr_images[0]} alt={props.mission_name} width={320} height={180} />
-                        )
-                    }
+                    <img src={props.bannerImage || props.coverImage.extraLarge} alt={props.title.english} width={320} height={180} />
 
-
-                    <h3>{props.mission_name}</h3>
-                    <span>{props.launch_date_local}</span>
+                    <h3>{props.title.english}</h3>
+                    <span>{props.averageScore}</span>
                 </div>
             </header>
-            {props.mission_name}
+            
+            <div>
+                <span>{props.title.native}</span>  
+                <p>
+                    <div style={{display: "contents"}} dangerouslySetInnerHTML={{__html: props.description}} />
+                </p>
+                <p>Number of episodes: <strong>{props.episodes}</strong></p>
+                <p>Status: {props.status}</p>
+                
+            </div>
+
+            <a href={props.siteUrl} target="_blank">
+                {props.title.english}
+            </a>
         </article>
     )
 }
