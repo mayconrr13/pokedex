@@ -1,34 +1,24 @@
-import { AnimeProps } from "./types"
+import { PokemonCardProps } from "./types"
 
 type CardProps = {
-    props: AnimeProps
+    props: PokemonCardProps
 }
 
 const Card = ({props}: CardProps) => {
     return (
         <article>
-            <header>
-                <div>
-                    <img src={props.bannerImage || props.coverImage.extraLarge} alt={props.title.english} width={320} height={180} />
+            {/* <img src="" alt="" /> */}
 
-                    <h3>{props.title.english}</h3>
-                    <span>{props.averageScore}</span>
-                </div>
-            </header>
-            
-            <div>
-                <span>{props.title.native}</span>  
-                <p>
-                    <div style={{display: "contents"}} dangerouslySetInnerHTML={{__html: props.description}} />
-                </p>
-                <p>Number of episodes: <strong>{props.episodes}</strong></p>
-                <p>Status: {props.status}</p>
-                
-            </div>
+            <span>{props.id}</span><br />
+            <strong>{props.name}</strong>
 
-            <a href={props.siteUrl} target="_blank">
-                {props.title.english}
-            </a>
+            <ul>
+                {props.pokemon_v2_pokemontypes.map((type) => {
+                    return (
+                        <li key={type.pokemon_v2_type.id} >{type.pokemon_v2_type.name}</li>
+                    )
+                })}
+            </ul>
         </article>
     )
 }

@@ -1,17 +1,31 @@
-export type AnimeProps = {
-    siteUrl: string
-    title: {
-        english: string
-        native: string
+export type PokemonCardProps = {
+  id: number
+  name: string
+  pokemon_v2_pokemontypes: PokemonTypeProps[]
+}
+
+export type PokemonProps = {
+  id: number
+  name: string
+  weight: string
+  height: string
+  pokemon_v2_pokemonabilities: {
+    pokemon_v2_ability: {
+      name: string
     }
-    description: string
-    status: string
-    episodes: string
-    chapters: string
-    coverImage: {
-        extraLarge: string
+  }
+  pokemon_v2_pokemontypes: PokemonTypeProps[]
+  pokemon_v2_pokemonstats: {
+    base_stat: string
+    pokemon_v2_stat: {
+      name: string
     }
-    bannerImage: string
-    averageScore: string
-    isFavourite: string
+  }
+}
+
+type PokemonTypeProps = {
+  pokemon_v2_type: {
+    name: string
+    id: string
+  }
 }

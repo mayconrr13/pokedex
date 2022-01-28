@@ -1,67 +1,111 @@
 import { useEffect, useState } from 'react';
-import {
-  useQuery,
-  gql
-} from "@apollo/client";
 import Card from './components/Card'
-import { AnimeProps } from './components/Card/types';
+import { PokemonCardProps } from './components/Card/types';
 
 function App() {
-  const [animes, setAnimes] = useState<AnimeProps[]>([] as AnimeProps[])
-
-  const getTypeQuery = gql`
-    query getAnimesList ($perPage: Int)  {
-      Page(perPage: $perPage) {
-        media {
-          siteUrl
-          title {
-            english
-            native
-          }
-          description
-          status
-          episodes
-          chapters
-          coverImage {
-            extraLarge
-          }
-          bannerImage
-          averageScore
-          isFavourite
-        }
-      }
-    }   
-  `
-
-  const { data, loading, error, fetchMore } = useQuery(getTypeQuery, {
-    variables: {
-      perPage: 100
-    }
-  })
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [hasError, setHasError] = useState<boolean>(false)
+  const [pokemons, setPokemons] = useState<PokemonCardProps[]>([] as PokemonCardProps[])
 
   useEffect(() => {
-    if (data) {
-      setAnimes(data.Page.media)
-    }
-  }, [data])
+    fetch('https://beta.pokeapi.co/graphql/v1beta', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+          query: `
+            query getPokemonsList($limit: Int, $offset: Int) {
+              pokemon_v2_pokemon(limit: $limit, offset: $offset) {
+                id
+                name                
+                pokemon_v2_pokemontypes {
+                  pokemon_v2_type {
+                    name
+                    id
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            limit: null,
+            offset: null
+          }
+        }
+      )
+    })
+      .then((res) => res.json())
+      .then((results) => {
+        setPokemons(results.data.pokemon_v2_pokemon)
+        setHasError(false)
+      })
+      .catch((err) => {
+        console.log("Error: :(")
+        setHasError(true)
+      }) 
+      .finally(() => {
+        setIsLoading(false)
+      }
+    )
+  }, [])
 
-  console.log(data)
-  
+  if (isLoading) {
+    return (
+      <p>Loading ...</p>
+    )
+  }
+    
   return (
     <>
       {
-        data && !error && !loading &&
-          animes.map((item: any) => {
-            return (
-              <Card props={item}/>
-            )
-          })
+        pokemons.length > 0 || !hasError ? (
+          <>    
+            {
+              pokemons.map((pokemon) => {
+                return (
+                  <Card 
+                    props={
+                      pokemon
+                    }
+                  />
+                )
+              })
+            }
+          </>
+        ) : (
+          <p>Error :(</p>
+        )
       }
-
-      {loading && <p>Loading ...</p>}
-      {error && <p>Error :(</p>}
     </>
   )
 }
 
 export default App
+
+
+// query ExampleQuery($limit: Int, $offset: Int) {
+//   pokemon_v2_pokemon(limit: $limit, offset: $offset) {
+//     id
+//     name
+//     weight
+//     height
+//     pokemon_v2_pokemonabilities {
+//       pokemon_v2_ability {
+//         name
+//       }
+//     }
+//     pokemon_v2_pokemontypes {
+//       pokemon_v2_type {
+//         name
+//         id
+//       }
+//     }
+//     pokemon_v2_pokemonstats {
+//       base_stat
+//       pokemon_v2_stat {
+//         name
+//       }
+//     }
+//   }
+// }
